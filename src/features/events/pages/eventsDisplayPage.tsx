@@ -29,47 +29,38 @@ export default function EventsPage() {
 
   useEffect(() => {
     getEventTypes()
-      .then((types) => {
-        // Ensure types is an array
-        setEventTypes(Array.isArray(types) ? types : []);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch event types:", err);
-        setError(`Failed to fetch event types: ${err}`);
-        setEventTypes([]); // Set empty array on error
-      });
+      .then((types) => setEventTypes(types))
+      .catch((err) => setError(`Failed to fetch event types: ${err}`));
   }, []);
 
   const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      setError("");
+  try {
+    setLoading(true);
+    setError("");
 
-      const res = await getFilteredEvents(
-        page,
-        6,
-        searchQuery,
-        selectedCategory !== "all" ? selectedCategory : "",
-        selectedStatus !== "all" ? selectedStatus : ""
-      );
-      console.log(res);
+    const res = await getFilteredEvents(
+      page,
+      6,
+      searchQuery,
+      selectedCategory !== "all" ? selectedCategory : "",
+      selectedStatus !== "all" ? selectedStatus : ""
+    );
+    setEvents(res.data?.items || []);
+    console.log(events);
+    setTotalPages(res.data?.totalPages || 1);
+  } catch (err) {
+    setError("Failed to load events");
+    setEvents([]);
+    setTotalPages(1);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      setEvents(Array.isArray(res.data?.items) ? res.data.items : []);
-      setTotalPages(res.data?.totalPages || 1);
-      console.log(events);
-    } catch (err) {
-      console.error("Failed to load events:", err);
-      setError("Failed to load events");
-      setEvents([]);
-      setTotalPages(1);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchEvents();
-  }, [page, searchQuery, selectedCategory, selectedStatus]);
+  }, [page, searchQuery]);
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -115,8 +106,7 @@ export default function EventsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
-                  {/* Safe array mapping with fallback */}
-                  {(eventTypes || []).map((type) => (
+                  {eventTypes.map((type) => (
                     <SelectItem key={type.value} value={type.value.toString()}>
                       {type.label}
                     </SelectItem>
