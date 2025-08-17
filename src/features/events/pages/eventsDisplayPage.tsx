@@ -34,24 +34,28 @@ export default function EventsPage() {
   }, []);
 
   const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const res = await getFilteredEvents(
-        page,
-        6,
-        searchQuery,
-        selectedCategory !== "all" ? selectedCategory : "",
-        selectedStatus !== "all" ? selectedStatus : "",
-      );
-      setEvents(res.data.items);
-      setTotalPages(res.data.totalPages);
-    } catch (err) {
-      setError("Failed to load events");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    setError("");
+
+    const res = await getFilteredEvents(
+      page,
+      6,
+      searchQuery,
+      selectedCategory !== "all" ? selectedCategory : "",
+      selectedStatus !== "all" ? selectedStatus : ""
+    );
+    setEvents(res.data?.items || []);
+    setTotalPages(res.data?.totalPages || 1);
+  } catch (err) {
+    setError("Failed to load events");
+    setEvents([]);
+    setTotalPages(1);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchEvents();
