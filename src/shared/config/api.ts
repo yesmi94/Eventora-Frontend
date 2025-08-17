@@ -3,7 +3,7 @@ import keycloak from "@/lib/keycloak";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.BASE_URL,
+  baseURL: "https://web-app-event-management-backend.azurewebsites.net/api",
   headers: {
     Accept: "application/json",
     Authorization: `Bearer ${keycloak?.token}`,
