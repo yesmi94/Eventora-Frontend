@@ -34,29 +34,26 @@ export default function EventsPage() {
   }, []);
 
   const fetchEvents = async () => {
-  try {
-    setLoading(true);
-    setError("");
-
-    const res = await getFilteredEvents(
-      page,
-      6,
-      searchQuery,
-      selectedCategory !== "all" ? selectedCategory : "",
-      selectedStatus !== "all" ? selectedStatus : ""
-    );
-    setEvents(res.data?.items || []);
-    console.log(events);
-    setTotalPages(res.data?.totalPages || 1);
-  } catch (err) {
-    setError("Failed to load events");
-    setEvents([]);
-    setTotalPages(1);
-  } finally {
-    setLoading(false);
-  }
-};
-
+    try {
+      setLoading(true);
+      setError("");
+      const res = await getFilteredEvents(
+        page,
+        6,
+        searchQuery,
+        selectedCategory !== "all" ? selectedCategory : "",
+        selectedStatus !== "all" ? selectedStatus : ""
+      );
+      setEvents(res.data?.items || []);
+      setTotalPages(res.data?.totalPages || 1);
+    } catch (err) {
+      setError("Failed to load events");
+      setEvents([]);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchEvents();
@@ -74,7 +71,7 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-4">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-1 mt-10">
             All Events
@@ -84,7 +81,7 @@ export default function EventsPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl p-4 sm:p-5 mb-4 border border-gray-200 shadow-sm">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 mb-4 border border-gray-200 shadow-sm">
           <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 items-center">
             <div className="relative flex-1 w-full">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -211,8 +208,8 @@ export default function EventsPage() {
           </div>
         )}
 
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-gray-600 pb-10">{events.length} events found</p>
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
+          <p className="text-gray-600">{events.length} events found</p>
           {totalPages > 1 && (
             <div className="flex items-center gap-2">
               <Button
@@ -283,3 +280,4 @@ export default function EventsPage() {
     </div>
   );
 }
+
