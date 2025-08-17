@@ -3,7 +3,11 @@ import keycloak from "@/lib/keycloak";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://localhost:7002/api",
+  baseURL: import.meta.env.BASE_URL,
+  headers: {
+    Accept: "application/json",
+    Authorization: `Bearer ${keycloak?.token}`,
+  },
 });
 
 api.interceptors.request.use((config) => {
